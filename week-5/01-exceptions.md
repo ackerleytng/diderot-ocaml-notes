@@ -7,6 +7,7 @@ Exceptions can be used to signal and handle exceptional conditions
 + New exceptions can be defined at any time
 + The `exn` can be extended
 + Exceptions cannot be polymorphic
++ Raising and handling exceptions is very fast
 
 Declare exceptions using the `exception` keyword.
 
@@ -56,3 +57,9 @@ let multlexc l =
   in
   try aux l with Zero -> 0
 ```
+
+Runtime errors can be captured as exceptions, such as
+
++ Division by zero
++ Incomplete pattern matching
++ Out-of-bound access to indexed data structures like arrays
