@@ -24,3 +24,47 @@ module type S = sig ... end
 ```
 module M : S = struct ... end
 ```
+
+Example of a well-designed signature
+
+```
+module Naturals :
+sig
+  type t
+  val zero : t
+  val succ : t -> t
+  val pred : t -> t
+end
+  
+open Naturals
+let rec add : t -> t -> t = fun x y -> 
+  if x = zero then y else succ (add (pred x) y)
+```
+
+This signature is good because
+
++ The definition of type `t` has been hidden, so users of this module cannot abuse the knowledge that `t` is an `int` and potentially break the abstraction.
++ The typechecker will enforce this
++ `t` is called an abstract type
+
+Private definitions
+
++ The programmer can choose not to export some definitions
++ This is convenient to hide private internal functions
+
+```
+module Naturals :
+sig
+  type t
+  val zero : t
+  (* Since return_natural is not exposed, it can't be used by other functions *)
+  val succ : t -> t
+  val pred : t -> t
+end = struct
+  type t = int
+  let zero = 0
+  let return_natural n = assert (n >= 0 && n <= max_int); n
+  let succ n = if n = max_int then 0 else return_natural (n + 1)
+  let pred = function 0 -> 0 | n -> n - 1
+end
+```
